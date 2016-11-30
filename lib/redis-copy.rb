@@ -18,8 +18,8 @@ module RedisCopy
     def copy(source, destination, options = {})
       ui = UI.new(options)
 
-      source = redis_from(source)
-      destination = redis_from(destination)
+      source = redis_from(source, options)
+      destination = redis_from(destination, options)
 
       ui.abort('source cannot equal destination!') if same_redis?(source, destination)
 
@@ -86,7 +86,7 @@ module RedisCopy
       redis_a.client.id == redis_b.client.id
     end
 
-    def redis_from(connection_string)
+    def redis_from(connection_string, options)
       require 'uri'
       connection_string = "redis://#{connection_string}" unless connection_string.start_with?("redis://")
       uri = URI(connection_string)
@@ -101,7 +101,14 @@ module RedisCopy
       password = uri.password
 
       # Connect & Ping to ensure access.
-      Redis.new(host: host, port: port, db: db, password: password).tap(&:ping)
+      Redis.new(
+        host: host,
+        port: port,
+        db: db,
+        password: password,
+        timeout: options[:timeout],
+        tcp_keepalive: options[:keepalive]
+      ).tap(&:ping)
     rescue Redis::CommandError => e
       fail(Redis::CommandError,
            "There was a problem connecting to #{uri.to_s}\n#{e.message}")

@@ -1,4 +1,4 @@
-# Redis::Copy
+# RedisCopy
 
 This utility provides a way to move the contents of one redis DB to another
 redis DB. It is inspired by the [redis-copy.rb script][original] included in
@@ -39,6 +39,10 @@ Specific options:
     -t, --[no-]trace                 Enable backtrace on failure (default false)
         --[no-]prompt                Prompt for confirmation (default true)
         --[no-]dry-run               Output configuration and exit
+    -T  --timeout                    Set the Redis connection timeout (default 5.0)
+                                     See https://github.com/redis/redis-rb for more info.
+    -K  --keepalive                  Set the Redis connection keep-alive (default 0)
+                                     See https://github.com/redis/redis-rb for more info.
 ```
 
 ## Example:
