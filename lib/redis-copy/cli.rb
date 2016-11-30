@@ -9,6 +9,8 @@ module RedisCopy
     DEFAULTS = {
       ui:             :command_line,
       verify:         0,
+      timeout:        5.0,
+      keepalive:      0,
       pipeline:       :true,
       fail_fast:      false,
       prompt:         true,
@@ -98,6 +100,20 @@ module RedisCopy
 
         opts.on('--[no-]dry-run', 'Output configuration and exit') do |d|
           options[:dry_run] = true
+        end
+
+        opts.on('-T', '--timeout SECONDS', indent_desc.(
+          "Set the Redis connection timeout (default #{DEFAULTS[:timeout]})\n" +
+          "See https://github.com/redis/redis-rb for more info.")
+        ) do |timeout|
+          options[:timeout] = timeout.to_f
+        end
+
+        opts.on('-K', '--keep-alive SECONDS', indent_desc.(
+          "Set the Redis connection keep-alive (default #{DEFAULTS[:keepalive]})\n" +
+          "See https://github.com/redis/redis-rb for more info.")
+        ) do |keepalive|
+          options[:keepalive] = keepalive.to_i
         end
 
         begin
